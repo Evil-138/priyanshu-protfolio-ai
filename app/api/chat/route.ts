@@ -1,9 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import OpenAI from "openai";
 
-const openai = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY,
-});
 
 const SYSTEM_PROMPT = `You are an AI assistant representing Priyanshu Shukla's professional portfolio. 
 Answer questions about Priyanshu concisely, professionally, and intelligently.
@@ -69,6 +66,7 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ response });
         }
 
+        const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
         const completion = await openai.chat.completions.create({
             model: "gpt-4o-mini",
             messages: [
