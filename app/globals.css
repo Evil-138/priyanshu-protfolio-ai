@@ -1,26 +1,289 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Deep soft dark palette */
+  --bg-primary: #080b14;
+  --bg-secondary: #0d1120;
+  --bg-card: rgba(255, 255, 255, 0.035);
+  --bg-card-hover: rgba(255, 255, 255, 0.06);
+
+  /* Accent system */
+  --accent: #5b9cff;
+  --accent-glow: rgba(91, 156, 255, 0.2);
+  --accent-soft: rgba(91, 156, 255, 0.12);
+  --accent-border: rgba(91, 156, 255, 0.25);
+  --violet: #a78bfa;
+  --violet-soft: rgba(167, 139, 250, 0.15);
+  --emerald: #34d399;
+  --rose: #fb7185;
+  --amber: #fbbf24;
+
+  /* Text */
+  --text-primary: #eef2ff;
+  --text-secondary: #94a3b8;
+  --text-muted: #475569;
+
+  /* Glass system */
+  --glass-bg: rgba(13, 17, 32, 0.75);
+  --glass-bg-light: rgba(20, 26, 46, 0.6);
+  --border: rgba(255, 255, 255, 0.065);
+  --border-accent: rgba(91, 156, 255, 0.2);
+
+  /* Shadows */
+  --shadow-sm: 0 2px 12px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 8px 32px rgba(0, 0, 0, 0.4);
+  --shadow-accent: 0 8px 32px rgba(91, 156, 255, 0.15);
+  --shadow-glow: 0 0 40px rgba(91, 156, 255, 0.12);
+
+  /* Spacing */
+  --section-pad: 120px;
+  --radius-sm: 12px;
+  --radius-md: 18px;
+  --radius-lg: 24px;
+  --radius-pill: 100px;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-bg-primary: var(--bg-primary);
+  --color-bg-secondary: var(--bg-secondary);
+  --color-accent: var(--accent);
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 80px;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: 'Plus Jakarta Sans', 'Inter', system-ui, -apple-system, sans-serif;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  line-height: 1.6;
+}
+
+/* ─── SCROLLBAR ─────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-primary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, var(--accent), var(--violet));
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent);
+}
+
+/* ─── SELECTION ─────────────────────────────────── */
+::selection {
+  background: rgba(91, 156, 255, 0.25);
+  color: var(--text-primary);
+}
+
+/* ─── GLASS CARD ────────────────────────────────── */
+.glass-card {
+  background: var(--glass-bg);
+  border: 1px solid var(--border);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+}
+
+/* ─── SOFT CARD ─────────────────────────────────── */
+.soft-card {
+  background: rgba(16, 22, 42, 0.7);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.soft-card:hover {
+  border-color: var(--border-accent);
+  box-shadow: var(--shadow-accent);
+}
+
+/* ─── FLOATING BUTTON (primary) ─────────────────── */
+.btn-float {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 30px;
+  background: linear-gradient(135deg, var(--accent), #6366f1);
+  color: #fff;
+  font-weight: 700;
+  font-size: 14px;
+  font-family: inherit;
+  border: none;
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  text-decoration: none;
+  letter-spacing: 0.2px;
+  box-shadow: 0 4px 20px rgba(91, 156, 255, 0.35), 0 1px 0 rgba(255, 255, 255, 0.15) inset;
+  transition: transform 0.22s ease, box-shadow 0.22s ease, opacity 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-float::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.12), transparent);
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+.btn-float:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(91, 156, 255, 0.45), 0 1px 0 rgba(255, 255, 255, 0.2) inset;
+}
+
+.btn-float:active {
+  transform: translateY(0);
+}
+
+/* ─── FLOATING BUTTON (ghost) ───────────────────── */
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 13px 28px;
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text-primary);
+  font-weight: 600;
+  font-size: 14px;
+  font-family: inherit;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  text-decoration: none;
+  letter-spacing: 0.2px;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition: transform 0.22s ease, background 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease;
+}
+
+.btn-ghost:hover {
+  transform: translateY(-2px);
+  background: rgba(91, 156, 255, 0.08);
+  border-color: var(--border-accent);
+  box-shadow: 0 4px 16px rgba(91, 156, 255, 0.1);
+}
+
+/* ─── SECTION CONTAINER ─────────────────────────── */
+.section-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 28px;
+}
+
+/* ─── SECTION LABEL ─────────────────────────────── */
+.section-label {
+  font-size: 11px;
+  letter-spacing: 3.5px;
+  text-transform: uppercase;
+  color: var(--accent);
+  font-weight: 700;
+  font-family: 'Inter', sans-serif;
+}
+
+/* ─── GRADIENT TEXT ─────────────────────────────── */
+.gradient-text {
+  background: linear-gradient(135deg, #eef2ff 0%, #5b9cff 45%, #a78bfa 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ─── GRID BG ───────────────────────────────────── */
+.grid-bg {
+  background-image:
+    linear-gradient(rgba(91, 156, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(91, 156, 255, 0.03) 1px, transparent 1px);
+  background-size: 56px 56px;
+}
+
+/* ─── NOISE OVERLAY ─────────────────────────────── */
+.noise-overlay {
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  opacity: 0.025;
+  pointer-events: none;
+}
+
+/* ─── GLOW RING ─────────────────────────────────── */
+.glow-ring {
+  border-radius: 50%;
+  border: 1px solid var(--border-accent);
+  box-shadow: 0 0 30px var(--accent-glow), inset 0 0 30px rgba(91, 156, 255, 0.04);
+}
+
+/* ─── TECH BADGE ─────────────────────────────────── */
+.tech-badge {
+  font-size: 11px;
+  padding: 4px 10px;
+  border-radius: 100px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: var(--text-secondary);
+  font-weight: 500;
+  font-family: 'Inter', sans-serif;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+}
+
+/* ─── GSAP ANIMATION UTILITIES ───────────────────── */
+.gsap-reveal {
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+/* ─── SCROLL TO TOP ─────────────────────────────── */
+.scroll-to-top {
+  position: fixed;
+  bottom: 32px;
+  right: 32px;
+  z-index: 99;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent), var(--violet));
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 20px rgba(91, 156, 255, 0.4);
+  transition: transform 0.22s ease, opacity 0.3s;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.scroll-to-top.visible {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.scroll-to-top:hover {
+  transform: translateY(-3px) scale(1.05);
 }
