@@ -1,86 +1,47 @@
 import { NextRequest, NextResponse } from "next/server";
-import OpenAI from "openai";
 
+const RESPONSES: Record<string, string> = {
+    project:
+        "Priyanshu has built: an AI Prompt Enhancer (open-source NLP tool), a BTC/USDT Algo Trading Strategy (831 trades, +1,754 USDT P&L), a SmartSummarizer (Flask + HuggingFace), and this AI-Enhanced Portfolio. Each project showcases full-stack AI engineering from data pipelines to live deployments.",
+    skill:
+        "Priyanshu's core stack: Python (TensorFlow, PyTorch, Pandas), Next.js/TypeScript, Generative AI (OpenAI, LangChain, RAG), Quantitative Finance (Binance API, Markov Models, Pine Script), and advanced UI with GSAP, Three.js & Framer Motion.",
+    tech:
+        "Priyanshu works across the full stack: Next.js, React, FastAPI, Node.js on the web side — and TensorFlow, PyTorch, Scikit-learn, LangChain on the AI/ML side. He also builds quant systems with Python, Binance API, and TradingView Pine Script.",
+    goal:
+        "Priyanshu's goal is to build production-grade AI products at the intersection of machine learning and quantitative finance — developing GenAI-powered SaaS systems with intelligent, high-performance UX.",
+    experience:
+        "Priyanshu's journey: 2023 — Web Development (React, Next.js); 2024 — AI-integrated SaaS platforms; 2025 — Quant trading systems & real-time analytics dashboards; 2026 — Building LLM-powered SaaS and advanced algorithmic trading platforms.",
+    trading:
+        "Priyanshu built a BTC/USDT automated trading strategy using Markov Models + EMA on 15-min Binance data. Backtested Aug–Oct 2025: 831 trades, +1,754 USDT P&L, max equity drawdown of just 0.06%. He integrates Smart Money Concepts and risk-reward management.",
+    ai:
+        "Priyanshu specialises in Generative AI — building RAG systems, prompt engineering pipelines, and LLM-powered apps with OpenAI and LangChain. He also has deep expertise in classical ML: supervised/unsupervised learning, NLP, and model deployment.",
+    contact:
+        "You can reach Priyanshu on LinkedIn at linkedin.com/in/priyanshu-shukla-017ba42ba or via GitHub at github.com/Evil-138. He's open to AI/ML roles, quant research positions, and freelance full-stack AI projects.",
+    default:
+        "Priyanshu Shukla is an AI Developer and Data Science Engineer specialising in Machine Learning, Generative AI, Quantitative Systems, and High-Performance Web. He builds intelligent, data-driven systems with clean architecture and modern engineering practices. Ask me about his projects, skills, or experience!",
+};
 
-const SYSTEM_PROMPT = `You are an AI assistant representing Priyanshu Shukla's professional portfolio. 
-Answer questions about Priyanshu concisely, professionally, and intelligently.
-
-ABOUT PRIYANSHU SHUKLA:
-Priyanshu Shukla is an AI-focused developer and data science enthusiast with deep expertise in:
-
-TECHNICAL SKILLS:
-- Artificial Intelligence & Machine Learning (TensorFlow, PyTorch, Scikit-learn)
-- Data Science & Analytics (Pandas, NumPy, Matplotlib, Seaborn)
-- Generative AI (OpenAI GPT, LangChain, Prompt Engineering, RAG systems)
-- Web Development (Next.js, React, TypeScript, Node.js, FastAPI)
-- Quantitative Trading & Finance (Algorithmic trading, backtesting, risk management, technical analysis)
-- API Architecture & System Design (REST APIs, WebSockets, microservices)
-- UI/UX Engineering (Framer Motion, Three.js, D3.js, Tailwind CSS)
-- Database (PostgreSQL, MongoDB, Redis)
-
-PROJECTS BUILT:
-1. AI Trading Analytics Dashboard - Real-time trading dashboard with ML-powered signals, risk metrics, and portfolio analytics
-2. Risk Management Calculator - Advanced quant risk calculator for position sizing, VaR, and drawdown analysis
-3. 3D Interactive SaaS Website - Immersive web experience with React Three Fiber and GSAP animations
-4. AI Resume Analyzer - Natural language processing tool that analyzes resumes and gives actionable feedback using OpenAI
-5. Quant Backtesting Simulator - Full-featured algorithmic trading strategy backtester with performance analytics
-
-EXPERIENCE & TIMELINE:
-- 2023: Learned Web Development (React, Next.js, Node.js)
-- 2024: Built AI-integrated websites and SaaS platforms
-- 2025: Developed Trading Analytics & AI Dashboards
-- 2026: Building Quant + GenAI systems
-
-GOALS:
-- Build production-grade AI products that solve real-world problems
-- Develop high-performance fintech and quant analytics platforms
-- Contribute to the intersection of AI and quantitative finance
-- Create AI-powered SaaS applications with intelligent UX
-
-PERSONALITY:
-Confident, detail-oriented, technical, always learning. Focused on clean architecture, performance, and modern engineering practices.
-
-Answer all questions as if you are a knowledgeable AI assistant about Priyanshu. Keep answers concise (2-4 sentences max unless more detail is explicitly requested). Be professional and technical when appropriate.`;
+function matchResponse(message: string): string {
+    const m = message.toLowerCase();
+    if (m.includes("project") || m.includes("built") || m.includes("portfolio")) return RESPONSES.project;
+    if (m.includes("trading") || m.includes("quant") || m.includes("btc") || m.includes("algo")) return RESPONSES.trading;
+    if (m.includes("ai") || m.includes("ml") || m.includes("machine learning") || m.includes("llm") || m.includes("gpt")) return RESPONSES.ai;
+    if (m.includes("skill") || m.includes("tech") || m.includes("stack") || m.includes("language")) return RESPONSES.skill;
+    if (m.includes("goal") || m.includes("future") || m.includes("plan") || m.includes("ambition")) return RESPONSES.goal;
+    if (m.includes("experience") || m.includes("timeline") || m.includes("journey") || m.includes("year")) return RESPONSES.experience;
+    if (m.includes("contact") || m.includes("hire") || m.includes("email") || m.includes("linkedin")) return RESPONSES.contact;
+    return RESPONSES.default;
+}
 
 export async function POST(request: NextRequest) {
     try {
         const { messages } = await request.json();
-
-        if (!process.env.OPENAI_API_KEY || process.env.OPENAI_API_KEY === "your_openai_api_key_here") {
-            // Return a demo response if no API key
-            const demoResponses: Record<string, string> = {
-                default: "Priyanshu is an AI developer specializing in Machine Learning, Data Science, and Quantitative Systems. He builds high-performance dashboards, AI-integrated SaaS platforms, and fintech analytics tools. Set your OPENAI_API_KEY in .env.local for live AI responses!",
-            };
-
-            const lastMessage = messages[messages.length - 1]?.content?.toLowerCase() || "";
-            let response = demoResponses.default;
-
-            if (lastMessage.includes("project")) {
-                response = "Priyanshu has built: an AI Trading Analytics Dashboard, Risk Management Calculator, 3D Interactive SaaS Website, AI Resume Analyzer, and a Quant Backtesting Simulator. Each project showcases his full-stack AI engineering capabilities.";
-            } else if (lastMessage.includes("skill") || lastMessage.includes("tech")) {
-                response = "Priyanshu's core stack includes Python (TensorFlow, PyTorch), Next.js/TypeScript, Generative AI (OpenAI, LangChain), Quantitative Finance tools, and advanced data visualization with D3.js and Three.js.";
-            } else if (lastMessage.includes("goal") || lastMessage.includes("future")) {
-                response = "Priyanshu's goal is to build production-grade AI products at the intersection of machine learning and quantitative finance, developing GenAI-powered SaaS systems with intelligent, high-performance UX.";
-            }
-
-            return NextResponse.json({ response });
-        }
-
-        const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-        const completion = await openai.chat.completions.create({
-            model: "gpt-4o-mini",
-            messages: [
-                { role: "system", content: SYSTEM_PROMPT },
-                ...messages,
-            ],
-            max_tokens: 300,
-            temperature: 0.7,
-        });
-
-        const response = completion.choices[0]?.message?.content || "I apologize, I couldn't generate a response.";
+        const lastMessage = messages?.[messages.length - 1]?.content || "";
+        const response = matchResponse(lastMessage);
+        // Simulate a small delay for a more natural feel
+        await new Promise((r) => setTimeout(r, 400));
         return NextResponse.json({ response });
-    } catch (error) {
-        console.error("Chat API error:", error);
+    } catch {
         return NextResponse.json(
             { error: "Failed to get response" },
             { status: 500 }
